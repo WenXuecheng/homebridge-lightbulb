@@ -89,7 +89,8 @@ class LightbulbAccessory {
         // get the current value of the switch in your own code
         let s = await lightbulb_on_raspberry(this.config.name, 'get', this.log);
         s = s.status_lightbulb;
-        const value = true;
+        const value = s;
+        this.log.info(value);
         return value;
     }
 
