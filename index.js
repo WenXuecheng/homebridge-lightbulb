@@ -70,6 +70,9 @@ class LightbulbAccessory {
         this.lightbulbService.getCharacteristic(this.Characteristic.On)
             .onGet(this.getOnHandler.bind(this))   // bind to getOnHandler method below
             .onSet(this.setOnHandler.bind(this));  // bind to setOnHandler method below
+        this.lightbulbService.getCharacteristic(this.Characteristic.Brightness)
+            .onGet(this.getOnHandlerBrightness.bind(this))   // bind to getOnHandler method below
+            .onSet(this.setOnHandlerBrightness.bind(this));  // bind to setOnHandler method below
     }
 
     /**
@@ -90,7 +93,7 @@ class LightbulbAccessory {
         let s = await lightbulb_on_raspberry(this.config.name, 'get', this.log);
         s = s.status_lightbulb;
         const value = s;
-        this.log.info(value);
+        this.log.info("value:"+value);
         return value;
     }
 
@@ -98,6 +101,26 @@ class LightbulbAccessory {
         let op
         if (value)
              op = 'open';
+        else
+            op = 'close';
+        let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
+        this.log.info(re);
+    }
+
+    async getOnHandlerBrightness(value) {
+        let op
+        if (value)
+            op = 'open';
+        else
+            op = 'close';
+        let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
+        this.log.info(re);
+    }
+
+    async setOnHandlerBrightness(value) {
+        let op
+        if (value)
+            op = 'open';
         else
             op = 'close';
         let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
