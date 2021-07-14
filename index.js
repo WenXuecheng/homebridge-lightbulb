@@ -2,10 +2,10 @@ module.exports = (api) => {
     api.registerAccessory('Lightbulb', LightbulbAccessory);
 };
 
-function lightbulb_on_raspberry(lightbulb_name, lightbulb_option, log) {
+function lightbulb_on_raspberry(lightbulb_name, lightbulb_option, option_var, log) {
     return new Promise(resolve => {
         const http = require('http');
-        http.get('http://localhost:8001/homebridge/lightbulb/' + lightbulb_name + '/' + lightbulb_option, (res) => {
+        http.get('http://localhost:8001/homebridge/lightbulb/' + lightbulb_name + '/' + lightbulb_option + '/' + option_var, (res) => {
             const {statusCode} = res;
             const contentType = res.headers['content-type'];
             let rawData = '';
@@ -90,7 +90,7 @@ class LightbulbAccessory {
         //this.log.info('Getting switch state');
 
         // get the current value of the switch in your own code
-        let s = await lightbulb_on_raspberry(this.config.name, 'get', this.log);
+        let s = await lightbulb_on_raspberry(this.config.name, 'get_status', 'none',this.log);
         s = s.status_lightbulb;
         const value = s;
         this.log.info("value:"+value);
@@ -103,27 +103,20 @@ class LightbulbAccessory {
              op = 'open';
         else
             op = 'close';
-        let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
+        let re = await lightbulb_on_raspberry(this.config.name, op, 'none',this.log);
         this.log.info(re);
     }
 
-    async getOnHandlerBrightness(value) {
-        let op
-        if (value)
-            op = 'open';
-        else
-            op = 'close';
-        let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
-        this.log.info(re);
+    async getOnHandlerBrightness() {
+
+        let s = await lightbulb_on_raspberry(this.config.name, 'get_brightness', 'none', this.log);
+        this.log.info('brightness:'+s.brightness_lightbulb);
+        const value = s.brightness_lightbulb;
+        return value;
     }
 
     async setOnHandlerBrightness(value) {
-        let op
-        if (value)
-            op = 'open';
-        else
-            op = 'close';
-        let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
+        let re = await lightbulb_on_raspberry(this.config.name, 'set_brightness', value,this.log);
         this.log.info(re);
     }
 }
