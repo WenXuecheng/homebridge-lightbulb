@@ -5,7 +5,7 @@ module.exports = (api) => {
 function switch_on_raspberry(switch_name, switch_option, log) {
     return new Promise(resolve => {
         const http = require('http');
-        http.get('http://192.168.1.101:8001/homebridge/switch/' + switch_name + '/' + switch_option, (res) => {
+        http.get('http://localhost:8001/homebridge/switch/' + switch_name + '/' + switch_option, (res) => {
             const {statusCode} = res;
             const contentType = res.headers['content-type'];
             let rawData = '';
@@ -56,17 +56,18 @@ class LightbulbAccessory {
         this.config = config;
         this.api = api;
 
-
+        this.Service = this.api.hap.Service;
+        this.Characteristic = this.api.hap.Characteristic;
         // your accessory must have an AccessoryInformation service
         this.informationService = new this.api.hap.Service.AccessoryInformation()
             .setCharacteristic(this.api.hap.Characteristic.Manufacturer, "Connor Manufacturer")
             .setCharacteristic(this.api.hap.Characteristic.Model, "Connor Model");
-
+        this.name = config.name;
         // create a new "Switch" service
-        this.switchService = new this.api.hap.Service.Switch(this.name);
+        this.lightbulbService = new this.Service.Lightbulb(this.name);
 
         // link methods used when getting or setting the state of the service
-        this.switchService.getCharacteristic(this.api.hap.Characteristic.On)
+        this.lightbulbService.getCharacteristic(this.Characteristic.On)
             .onGet(this.getOnHandler.bind(this))   // bind to getOnHandler method below
             .onSet(this.setOnHandler.bind(this));  // bind to setOnHandler method below
     }
@@ -78,7 +79,7 @@ class LightbulbAccessory {
     getServices() {
         return [
             this.informationService,
-            this.switchService,
+            this.lightbulbService,
         ];
     }
 
