@@ -2,10 +2,10 @@ module.exports = (api) => {
     api.registerAccessory('Lightbulb', LightbulbAccessory);
 };
 
-function switch_on_raspberry(switch_name, switch_option, log) {
+function lightbulb_on_raspberry(lightbulb_name, lightbulb_option, log) {
     return new Promise(resolve => {
         const http = require('http');
-        http.get('http://localhost:8001/homebridge/lightbulb/' + switch_name + '/' + switch_option, (res) => {
+        http.get('http://localhost:8001/homebridge/lightbulb/' + lightbulb_name + '/' + lightbulb_option, (res) => {
             const {statusCode} = res;
             const contentType = res.headers['content-type'];
             let rawData = '';
@@ -87,8 +87,8 @@ class LightbulbAccessory {
         //this.log.info('Getting switch state');
 
         // get the current value of the switch in your own code
-        let s = await switch_on_raspberry(this.config.name, 'get', this.log);
-        s = s.status_switch;
+        let s = await lightbulb_on_raspberry(this.config.name, 'get', this.log);
+        s = s.status_lightbulb;
         const value = true;
         return value;
     }
@@ -99,6 +99,7 @@ class LightbulbAccessory {
              op = 'open';
         else
             op = 'close';
-        switch_on_raspberry(this.config.name, op, this.log);
+        let re = await lightbulb_on_raspberry(this.config.name, op, this.log);
+        this.log.info(re);
     }
 }
