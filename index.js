@@ -1,5 +1,5 @@
 module.exports = (api) => {
-    api.registerAccessory('Lightbulb', LightbulbAccessory);
+    api.registerAccessory('lightbulb', LightbulbAccessory);
 };
 
 function lightbulb_on_raspberry(lightbulb_name, lightbulb_option, option_var, log) {
