@@ -5,7 +5,7 @@ module.exports = (api) => {
 function lightbulb_on_raspberry(lightbulb_name, lightbulb_option, option_var, log) {
     return new Promise(resolve => {
         const http = require('http');
-        http.get('http://localhost:8001/homebridge/lightbulb/' + lightbulb_name + '/' + lightbulb_option + '/' + option_var, (res) => {
+        http.get('http://localhost:6526/homebridge/lightbulb/' + lightbulb_name + '/' + lightbulb_option + '/' + option_var, (res) => {
             const {statusCode} = res;
             const contentType = res.headers['content-type'];
             let rawData = '';
